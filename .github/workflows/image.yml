@@ -22,8 +22,15 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        flavour-names: ["mongodb", "redis", "mysql", "postgresql"]
-        flavour-packages: ["mongodb mongodb-tools", "redis", "mysql-client", "postgresql-client"]
+        include:
+          - flavour-name: "mongodb"
+            flavour-package: "mongodb mongodb-tools"
+          - flavour-name: "redis"
+            flavour-package: "redis"
+          - flavour-name: "mysql"
+            flavour-package: "mysql-client"
+          - flavour-name: "postgresql"
+            flavour-package: "postgresql-client"
 
     permissions:
       contents: read
@@ -44,7 +51,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
         with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-${{ matrix.flavour-names }}
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-${{ matrix.flavour-name }}
 
       - name: Build and push Docker image
         uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
@@ -55,4 +62,4 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           build-args: |
             ALPINE_VERSION=${{ env.DOCKER_ALPINE_VERSION }}
-            DATABASE_FLAVOUR=${{ matrix.flavour-packages }}
+            DATABASE_FLAVOUR=${{ matrix.flavour-package }}
