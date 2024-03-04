@@ -3,7 +3,7 @@
 # separate terms of service, privacy policy, and support
 # documentation.
 
-name: Create and publish a Docker image
+name: Docker Pipeline
 
 on:
   push:
@@ -23,6 +23,8 @@ jobs:
       fail-fast: false
       matrix:
         include:
+          - flavour-name: "essentials"
+            flavour-package: ""
           - flavour-name: "mongodb"
             flavour-package: "mongodb mongodb-tools"
           - flavour-name: "redis"
